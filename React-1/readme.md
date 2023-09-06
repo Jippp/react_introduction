@@ -521,6 +521,10 @@ const Context = createContext(defaultValue)
 
 > 实际这样在context越来越大的时候，是会有问题的。可以配合immer等库避免不必要的更新。
 
+##### useImperativeHandle
+
+不常用，这里简单介绍一下用法。
+
 #### 组件通讯
 
 ##### 向下传递
@@ -530,7 +534,8 @@ const Context = createContext(defaultValue)
 ##### 向上传递
 
 - 父级组件向子组件传递一个函数，这个函数接收的参数就是需要传递的值
-- 通过use
+- 状态提升
+- forwardRef+useImperativeHandle
 
 ##### 同级之间
 
