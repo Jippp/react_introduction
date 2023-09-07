@@ -577,9 +577,128 @@ Redux/Mobx/zusand
 
 ##### less
 
+- `cra`是需要配置才能使用less的
+
+通过`react-app-rewired`这个第三方库来添加额外的webpack配置，一般还需要配合`customize-cra`这个库
+
+具体步骤：
+1. 安装第三方库以及less、less-loader
+```bash
+yarn add react-app-rewired customize-cra less less-loader -D
+```
+> react-app-rewired：可以修改cra内置的webpack配置
+>
+> customize-cra：cra2.0之后的兼容
+>
+> less：提供less支持
+>
+> less-loader：配合babel解析less语法的
+
+2. 在项目主目录下创建一个`config-overrides.js`文件，在该文件内进行额外的weback配置
+
+```js
+const { override, addLessLoader } = require('customize-cra')
+
+module.exports = override(
+  addLessLoader({
+    // less-loader@6版本之上，需要使用lessOptions包裹
+    lessOptions: {
+      javascriptEnabled: true,
+      cssLoaderOptions: {}
+    },
+  }),
+)
+```
+3. 将`package.json`中的`scripts`命令`react-scripts`替换成`react-app-rewired`，`eject`命令`react-app-rewired`没有提供，也不需要替换掉。
+
+4. 配置完成之后就可以使用less
+
 ##### cssInJs
 
+以styled-components为例
+
+不需要什么配置，安装`styled-components`即可使用
+
 ##### cssModule
+
+```js
+const { override, addLessLoader, adjustStyleLoaders } = require('customize-cra')
+
+module.exports = override(
+  addLessLoader({
+    // 注意版本
+    cssModules: {
+      // if you use CSS Modules, and custom `localIdentName`, default is '[local]--[hash:base64:5]'.
+      localIdentName: "[path][name]__[local]--[hash:base64:5]", 
+    },
+  }),
+  /**
+   * lessloader 最新版基于webpack5开发，而react-app-rewired基于webpack4，所以需要注意版本
+   * 但是即使将lessloader版本降低也可能会有相同问题，需要加上以下配置，该配置加上之后less-loader版本可以不用降低
+   * https://github.com/arackaf/customize-cra/issues/315
+   */
+  adjustStyleLoaders(({ use: [, , postcss] }) => {
+    const postcssOptions = postcss.options;
+    postcss.options = { postcssOptions };
+  })
+)
+```
+
+因为`react-app-rewire`是有社区维护的，基本不怎么更新，所以使用`react-app-rewire + customize-cra`会有很多版本的问题，官网也不一定可靠。
+
+##### Craco`Create React App Configuration Override.`
+
+[官网](https://github.com/dilanx/craco)
+
+- 首先安装一下`yarn add @cracp/craco`，如果使用less需要额外安装`craco-less`
+- 根目录创建`craco.config.js`
+
+```js
+const CracoLessPlugin = require('craco-less');
+const { loaderByName } = require('@craco/craco');
+const path = require('path');
+
+const lessModuleRegex = /\.module\.less$/;
+
+module.exports = {
+  webpack: {
+    alias: {
+      '@': path.resolve(__dirname, './src')
+    }
+  },
+  plugins: [
+    {
+      plugin: CracoLessPlugin,
+      options: {
+        lessLoaderOptions: {
+          lessOptions: {
+            // 自定义变量
+            // modifyVars: {
+            //     @primary-color: '#2378ff'
+            // },
+            javascriptEnabled: true
+          }
+        },
+        // lessmodule配置
+        modifyLessModuleRule(lessModuleRule) {
+          lessModuleRule.test = lessModuleRegex;
+
+          lessModuleRule.use.find(loaderByName('css-loader')).options.modules =
+            {
+              // if you use CSS Modules, and custom `localIdentName`, default is '[local]--[hash:base64:5]'.
+              localIdentName: '[path][name]__[local]--[hash:base64:5]'
+            };
+
+          return lessModuleRule;
+        }
+      }
+    }
+  ]
+};
+
+```
+
+- 修改`package.json`的`scripts` ：`react-scripts => craco`
 
 #### 实现一个todoList
 

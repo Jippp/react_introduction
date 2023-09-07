@@ -5,6 +5,7 @@ import HookComponent from "../modules/innerHooks";
 import EffectComponent from "../modules/effect";
 import ReducerComponent from "../modules/reducer";
 import Communicate from "../modules/communicate";
+import Css from "../modules/css";
 
 export const pathConfigs = [
   {
@@ -41,5 +42,10 @@ export const pathConfigs = [
     title: '关于组件通信',
     path: '/communicate',
     element: <Communicate />
+  },
+  {
+    title: '关于样式',
+    path: '/css',
+    element: <Css />
   },
 ]
