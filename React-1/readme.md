@@ -523,7 +523,27 @@ const Context = createContext(defaultValue)
 
 ##### useImperativeHandle
 
-不常用，这里简单介绍一下用法。
+不常用，这里简单介绍一下用法。一般配合`forwardRef`使用，当父级需要使用子级的一些方法或属性就能用到这个Hook
+
+```react
+import { forwardRef, useImperativeHandle } from 'react'
+
+const ChildComp = forwardRef((props, ref) => {
+    useImperativeHandle(ref, () => {
+        return {
+            // ...自定义的一些方法或属性
+        }
+    }, [])
+})
+```
+
+###### 入参
+
+- ref：forwardRef接收到的ref值
+- createHandle：function，返回一个包含想要暴露的方法或属性的对象
+- dependencies：依赖数组
+
+> 如果使用了该hook，外层使用ref只能拿到暴露出来的方法
 
 #### 组件通讯
 
@@ -533,13 +553,19 @@ const Context = createContext(defaultValue)
 
 ##### 向上传递
 
-- 父级组件向子组件传递一个函数，这个函数接收的参数就是需要传递的值
 - 状态提升
+
+> 如果父级需要子级的一些信息，通常是需要将状态提升到父级，然后再通过props传递到子级
+
 - forwardRef+useImperativeHandle
 
 ##### 同级之间
 
 - 借助同一个父级组件进行传递
+
+##### 跨组件的通信
+
+- createContext + useContext
 
 ##### 第三方库
 

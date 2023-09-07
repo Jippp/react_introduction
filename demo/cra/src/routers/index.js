@@ -4,6 +4,7 @@ import StateComponent from "../modules/state";
 import HookComponent from "../modules/innerHooks";
 import EffectComponent from "../modules/effect";
 import ReducerComponent from "../modules/reducer";
+import Communicate from "../modules/communicate";
 
 export const pathConfigs = [
   {
@@ -35,5 +36,10 @@ export const pathConfigs = [
     title: '关于reducer',
     path: '/reducer',
     element: <ReducerComponent />
+  },
+  {
+    title: '关于组件通信',
+    path: '/communicate',
+    element: <Communicate />
   },
 ]
