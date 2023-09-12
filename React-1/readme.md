@@ -700,6 +700,62 @@ module.exports = {
 
 - 修改`package.json`的`scripts` ：`react-scripts => craco`
 
-#### 实现一个todoList
+#### 实现一个简单的todoList
 
 > 实现一个简单的todoList，增删改查
+
+##### 项目搭建
+
+- `pnpm create-vite`创建一个vite项目
+
+- 项目添加配置
+
+```bash
+pnpm i less styled-components babel-plugin-styled-components postcss-preset-env -D 
+```
+
+然后修改`vite.config.ts`配置文件
+
+```ts
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import postcssPresetEnv from 'postcss-preset-env'
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [react({
+    babel: {
+      // 提供打包时DCE、代码压缩等的支持
+      plugins: ["babel-plugin-styled-components"]
+    }
+  })],
+  css: {
+    // css module配置
+    modules: {
+      generateScopedName: '[path][name]__[local]__[hash:base64:5]'
+    },
+    // postcss配置
+    postcss: {
+      plugins: [
+        postcssPresetEnv()
+      ]
+    }
+  },
+})
+```
+
+##### 思路
+
+要实现的功能有：
+
+1. 添加列表
+2. 对某一个子项的修改以及删除
+
+涉及到的react操作有：
+
+- antd的使用
+- useState、useCallback等hook的使用
+- 循环渲染、条件渲染
+- 组件划分：子项有自己的状态，必须要单独拿出来
+- 组件间的数据传递：这里组件层级较少，直接props传递即可
+
