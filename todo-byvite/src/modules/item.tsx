@@ -79,6 +79,9 @@ const Item: FC<ItemProps> = ({ item, setList }) => {
     setIsEditing(true)
   }, [])
 
+  /**
+   * 处理列表的状态变化
+   */
   const handleDone = useCallback((item: ListItemProps) => {
     setList(d => {
       return d.map(i => ({
@@ -98,19 +101,21 @@ const Item: FC<ItemProps> = ({ item, setList }) => {
           ) : <div>{item.title}</div>
         }
       </ItemContent>
-      {
-        isEditing ? (
-          <div>
-            <Button type="primary" size='small' onClick={handleEditCancel}>取消</Button>
-            <Button type="primary" size='small' onClick={() => handleEditAdd(item.id)}>确定</Button>
-          </div>
-        ) : (
-          <div>
-            <Button type='primary' size='small' onClick={handleEdit}>修改</Button>
-            <Button type='primary' size='small' onClick={() => handleDelete(item.id)}>删除</Button>
-          </div>
-        )
-      }
+      <div>
+        {
+          isEditing ? (
+            <>
+              <Button type="primary" size='small' onClick={handleEditCancel}>取消</Button>
+              <Button type="primary" size='small' onClick={() => handleEditAdd(item.id)}>确定</Button>
+            </>
+          ) : (
+            <>
+              <Button type='primary' size='small' onClick={handleEdit}>修改</Button>
+              <Button type='primary' size='small' onClick={() => handleDelete(item.id)}>删除</Button>
+            </>
+          )
+        }
+      </div>
     </ItemContainer>
   )
 }
